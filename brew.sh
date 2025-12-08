@@ -33,6 +33,9 @@ brew install grep
 # z hopping around folders
 brew install z
 
+# Fast Node Manager - better than nvm
+brew install fnm
+
 # run this script when this file changes guy.
 brew install entr
 
@@ -56,7 +59,6 @@ brew install the_silver_searcher # ack is an alternative, tbh i forget which i l
 brew install fzf
 
 brew install imagemagick
-brew install node # This installs `npm` too using the recommended installation method
 brew install rename
 brew install tree
 brew install ffmpeg
@@ -69,5 +71,4 @@ brew install gdu # available as gdu-go. faster than ncdu on SSD's.
 
 
 brew install scrcpy # control/view android phone from PC. amazing
-brew install youtube-dl
 

@@ -155,6 +155,12 @@ bash < <( curl https://raw.github.com/jamiew/git-friendly/master/install.sh)
 curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 
 
+# Install Node.js via fnm (Fast Node Manager)
+# fnm should already be installed via brew.sh
+fnm install --lts  # Install latest LTS version of Node
+fnm default lts-latest  # Set it as default
+fnm use default  # Use the default version
+
 # Type `git open` to open the GitHub page or website for a repository.
 npm install -g git-open
 

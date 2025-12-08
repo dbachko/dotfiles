@@ -48,13 +48,16 @@ end
 
 function dttyped --description "build devtools with typechecking"
     cd ./(git rev-parse --show-cdup)
-    set -l cmd "autoninja -C  out/Typed"
+    #                                     ↓ this changes any output paths to be click-resolvable :)
+    set -l cmd "autoninja -C  out/Typed | awk '{gsub(\"../../front_end\", \"./front_end\"); gsub(\"(//build/toolchain/linux:x64)\", \"\"); print}'"
     echo " > $cmd"
     eval $cmd
 end
 
-function dtb --description "build devtools with npm run watch"
-    npm run watch
+function dtb --description "build devtools with watch_build.js - my favorite"
+    cd ./(git rev-parse --show-cdup)
+
+    npm run build -- --watch
 end
 
 
@@ -87,12 +90,8 @@ end
 
 function cr --description "run chrome with dev devtools. optionally, pass canary or release plus additional flags as args"
     set -l cdup (git rev-parse --show-cdup)
-    set -l folder (basename $PWD)
-    set -l user_data_dir "$HOME/chromium-devtools/dt-chrome-profile" # Default to stable profile
-    if test "$current_folder" != "devtools-frontend"
-        set user_data_dir "$HOME/chromium-devtools/$folder-profile"
-    end
 
+    set -l user_data_dir "$HOME/chromium-devtools/dt-chrome-profile" # Default to stable profile
     set -l crpath "./$cdup/third_party/chrome/chrome*/Google\ Chrome\ for\ Testing.app/Contents/MacOS/Google\ Chrome\ for\ Testing"
     set -l dtpath (realpath out/Default/gen/front_end)
 
@@ -162,7 +161,9 @@ function glurpgrab0
 end
 
 function glurpgrab --description "dl mac-cross build from glurp"
-    glurpgrab0 && maccr-flagged
+    glurpgrab0
+
+    maccr-flagged
 end
 
 function maccr  --description "run the mac-os cross build grabbed from glurp"
@@ -192,7 +193,7 @@ end
 
 function maccr-flagged
     # some dev flags plus chrome-launcher flags.-
-    set -l bigcmd $HOME/chromium/src/out/Mac-cross-from-glurp/Chromium.app/Contents/MacOS/Chromium (crflags) $argv
+    set -l bigcmd $HOME/chromium/src/out/Mac-cross-from-glurp/Chromium.app/Contents/MacOS/Chromium (crflags)
 
      echo " > $bigcmd"
      eval $bigcmd
@@ -202,7 +203,6 @@ end
 function git-clfastupload
     git cl upload --force --bypass-hooks -o "banned-words~skip"
 end
-
 
 
 # dt. rpp
@@ -257,55 +257,4 @@ abbr gcert 'gcert-local'
 # copy a diff-looking thing (like our karma diffs) to clipboard and this'll run em through delta.  Could be improved for multiline strings but.. requires lotta lines.
 abbr deltapb 'printf "%s\n" "@@ -1,1 +1,1 @@" (pbpaste) | delta --max-line-length 1024 --minus-style "white #2b0000" --plus-style "white #001900"'
 
-
-function branches-where-filename-changed --description "find what branches touch a given file. Just string matching across the --stat, so.. partial filename is fine"
-    for b in (git for-each-ref --format='%(refname:short)' refs/heads/)
-        git diffbranch-that "$b" | grep -q "$argv" && echo "$b"; 
-    end
-end
-
-
-function list-all-branches-diff-size --description "list the diff line length of all branches"
-    for branch in (git branch --format="%(refname:short)")
-         set -l diff_lines (git diffbranch-that "$branch" | wc -l)
-         echo (string pad  -w 7 "$diff_lines") (set_color yellow)$branch(set_color normal)
-     end
-end
-
-abbr last7dcommits 'git log --all --author=paulirish --since="8 days ago" --oneline --decorate'
-
-# function gentlerebase
-    
-# end
-
-
-function git_log_grouped_by_branch_paul
-    # Get all local and remote-tracking branch names, removing 'origin/' for cleaner grouping
-    # and deduplicating. 'sort -u' ensures each logical branch appears once.
-    set -l all_branches (git branch --all --format='%(refname:short)'  | \
-                         string replace -r '^(remotes/)?origin/' '' | \
-                         sort -u | grep -v "chromium")
-
-    for branch in $all_branches
-        # Skip 'HEAD' if it's not a proper branch name (it often points to a branch)
-        if test "$branch" = "HEAD"
-            continue
-        end
-
-        # Capture the output of git log into a variable
-        set -l log_output (git log "$branch" --author=paulirish --since="8 days ago" --oneline --decorate \
-                                   --no-merges 2>/dev/null) # Redirect stderr to /dev/null to suppress warnings for non-existent branches etc.
-
-        # Check if the log_output variable is not empty
-        if test -n "$log_output"
-            # Print a clear header for the current branch
-            echo ""
-            echo "## Commits in last 8 days by 'paulirish' on branch: $branch"
-            echo ""
-
-            # Print the captured log output
-            git log "$branch" --author=paulirish --since="8 days ago" --oneline --decorate
-        end
-    end
-end
 

@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Easier navigation: .., ..., ~ and -
 alias ..="cd .."
 alias cd..="cd .."
@@ -21,11 +19,25 @@ alias brwe=brew  #typos
 
 alias hosts='sudo $EDITOR /etc/hosts'   # yes I occasionally 127.0.0.1 twitter.com ;)
 
+alias ag='ag -f --hidden'
+
 ###
-# time to upgrade `ls`. use eza instead of dealing with coreutils, LS_COLORS blah blah
-alias ls='eza --classify=auto --color --group-directories-first --sort=extension -A'
-alias la='eza --classify=auto --color --group-directories-first --sort=extension -a -l --octal-permissions --no-permissions'
+# time to upgrade `ls`
+
+# use coreutils `ls` if possible…
+hash gls >/dev/null 2>&1 || alias gls="ls"
+
+# always use color, even when piping (to awk,grep,etc)
+if gls --color > /dev/null 2>&1; then colorflag="--color"; else colorflag="-G"; fi;
+export CLICOLOR_FORCE=1
+
 # ls options: A = include hidden (but not . or ..), F = put `/` after folders, h = byte unit suffixes
+alias ls='gls -AFh ${colorflag} --group-directories-first'
+alias lsd='ls -l | grep "^d"' # only directories
+#    `la` defined in .functions
+###
+
+
 
 ###
 # GIT STUFF
@@ -42,16 +54,10 @@ alias undopush="git push -f origin HEAD^:master"
 
 # git root
 alias gr='[ ! -z `git rev-parse --show-cdup` ] && cd `git rev-parse --show-cdup || pwd`'
-
-
-alias gitmainormaster="git branch --format '%(refname:short)' --sort=-committerdate --list master main | head -n1"
-alias main="git checkout \$(gitmainormaster)"
-alias master="main"
-
-alias dotfiles="subl ~/code/dotfiles" # open dotfiles for viewing
-alias gemset="subl ~/.gemini/settings.json" # edit gemini cli settings
+alias master="git checkout main 2>/dev/null || git checkout master"
 
 # Networking. IP address, dig, DNS
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 # alias dig="dig +nocmd any +multiline +noall +answer"
 # wget sucks with certificates. Let's keep it simple.
 alias wget="curl -O"
@@ -59,25 +65,26 @@ alias wget="curl -O"
 # Recursively delete `.DS_Store` files
 alias cleanup_dsstore="find . -name '*.DS_Store' -type f -ls -delete"
 
-alias diskspace_report="df --si /"
+alias diskspace_report="df -P -kHl"
+alias free_diskspace_report="diskspace_report"
 
 # Shortcuts
 alias g="git"
-alias gi="git"
 alias v="vim"
 alias ungz="gunzip -k"
 
 # File size
 alias fs="stat -f \"%z bytes\""
 
+# Empty the Trash on all mounted volumes and the main HDD. then clear the useless sleepimage
+alias emptytrash=" \
+    sudo rm -rfv /Volumes/*/.Trashes; \
+    rm -rfv ~/.Trash/*; \
+    sudo rm -v /private/var/vm/sleepimage; \
+    rm -rv \"/Users/dbachko/Library/Application Support/stremio/Cache\";  \
+    rm -rv \"/Users/dbachko/Library/Application Support/stremio/stremio-cache\" \
+"
 
 # Update installed Ruby gems, Homebrew, npm, and their installed packages
 alias brew_update="brew -v update; brew upgrade --force-bottle --cleanup; brew cleanup; brew cask cleanup; brew prune; brew doctor; npm-check -g -u"
 alias update_brew_npm_gem='brew_update; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update --no-document'
-
-
-alias xpraserver='xpra start --printing=no --systemd-run=no --daemon=no :110'
-
-# weird ass behavior without this.
-alias watchexec="watchexec --project-origin ."
-

@@ -13,19 +13,6 @@ function subl --description 'Open Sublime Text'
   end
 end
 
-function solve_all_conflicts --description 'try to solve all current git conflicts with mergiraf'
-  set before (git diff --name-only --diff-filter=U | wc -l)
-  for file in (git diff --name-only --diff-filter=U)
-    set output (mergiraf solve --keep-backup=false "$file" 2>&1)
-    echo "$output"
-    if string match -q -- "*Solved all conflicts*" "$output"
-      git add "$file"
-      echo "now all resolved: $file"
-    end
-  end
-  set after (git diff --name-only --diff-filter=U | wc -l)
-  echo "Conflicted files: $before ==> $after"
-end
 
 function killprocess --description 'Kill process that user selects in fzf (from ps aux output)'
   set -l pid (ps aux | fzf -m --header-lines=1 | awk '{print $2}')
@@ -147,7 +134,6 @@ function gz --d "Get the gzipped size"
     # Gzip CLI default is -6, but GH pages only uses -5. Dunno about others.
     "gzip (-5)" \
     # "gzip (--best)" \
-    # Default zstd is -3
     (test (command -v zstd) && echo "zstd") \
     # (test (command -v zstd) && echo "zstd (-19)") \
     (test (command -v brotli) && echo "brotli (-q 5)") # brotli is last because its compressor is sloowww
@@ -193,31 +179,6 @@ function maxcpu100 -d "literally max out all your cores."
   for i in (seq (nproc)); yes >/dev/null & end
 end
 
-function copy_modification_date -d "Copies the modification time (and access time) of one file to another"
-    # Check if the correct number of arguments are provided
-    if test (count $argv) -ne 2
-        echo "Usage: cpmodtime <source_file> <target_file>" >&2
-        echo "Copies the modification time (and access time) from <source_file> to <target_file>." >&2
-        return 1
-    end
-
-    set -l source_file $argv[1]
-    set -l target_file $argv[2]
-
-    # Check if the source file exists and is a regular file
-    if not test -f "$source_file"
-        echo "Error: Source file '$source_file' does not exist or is not a regular file." >&2
-        return 1
-    end
-
-    # Use 'touch -r' to copy the timestamps (both modification and access)
-    touch -r "$source_file" "$target_file"
-end
-
-
-
-
-
 # requires my excellent `npm install -g statikk`
 function server -d 'Start a HTTP server in the current dir, optionally specifying the port'
     # arg can either be port number or extra args to statikk
@@ -259,7 +220,28 @@ function __lazy_init_cargo -d 'lazy initialize cargo'
 end
 abbr --add cargo --function __lazy_init_cargo
 
-# NVM doesnt support fish and its stupid to try to make it work there.
+# fnm - fast node manager (replacement for nvm that works with fish)
+function __lazy_init_fnm -d 'lazy initialize fnm'
+  abbr --erase fnm; functions --erase __lazy_init_fnm
+  abbr --erase node; functions --erase __lazy_init_node
+  abbr --erase npm; functions --erase __lazy_init_npm
+  fnm env --use-on-cd | source
+  echo "fnm"
+end
+abbr --add fnm --function __lazy_init_fnm
+
+function __lazy_init_node -d 'lazy initialize node via fnm'
+  __lazy_init_fnm
+  echo "node"
+end
+abbr --add node --function __lazy_init_node
+
+function __lazy_init_npm -d 'lazy initialize npm via fnm'
+  __lazy_init_fnm
+  echo "npm"
+end
+abbr --add npm --function __lazy_init_npm
+
 # gcloud: Don't need "$HOME/google-cloud-sdk/path.fish.inc" lazyily done because it only adds to PATH which is already done.
 
 

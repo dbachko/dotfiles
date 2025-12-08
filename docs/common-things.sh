@@ -1,9 +1,17 @@
-# shellcheck disable=2148
+#!/bin/bash
+
+
+# finding files with locate and updatedb
+LC_ALL=C sudo /Users/dbachko/.homebrew/bin/gupdatedb --prunepaths="/tmp /var/tmp /.Spotlight-V100 /.fseventsd /Volumes/MobileBackups /Volumes/Volume /.MobileBackups"
+
+which glocate > /dev/null && alias locate=glocate
+locate navbar
+
 
 
 # listing all useragent from your logs
 zcat ~/path/to/access/logs* | awk -F'"' '{print $6}' | sort | uniq -c | sort -rn | head -n20000
-zcat logs/paulirish.com/http/access.log* | awk -F'"' '{print $6}' | sort | uniq -c | sort -rn | head -n20000 | less
+zcat logs/dbachko.com/http/access.log* | awk -F'"' '{print $6}' | sort | uniq -c | sort -rn | head -n20000 | less
 
 
 ### rsync
@@ -51,11 +59,7 @@ rm $chromefilename
 
 
 
-# measuring time in fish shell:
 
-# set -l earlier (gdate +%s%N); 
-# sleep 0.5; 
-# set -l andnow (gdate +%s%N);  echo cool (math ( math $andnow - $earlier) / 1000 / 1000  )
 
 
 

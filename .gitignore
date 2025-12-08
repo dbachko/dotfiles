@@ -1,17 +1,46 @@
-# This is intended as GLOBAL ~/.gitignore, not just this dotfiles repo. (But.. it's both.)
-
-# I like having a personal readme file to keep notes.
-PAUL.readme.md
+# working files
+.vim/viminfo
+.vim/swaps/*
+.vim/undo
 
 # git credential file
 .gitconfig.local
 
-# Nice and clean by default, but this does create a problem if I don't add into new repos gitignore and other folks dont have the same default.  problems when other folks don't have the same in their global gitignore.  
+# no thx
 node_modules
 
-# why u be like that
+# Folder view configuration files
 .DS_Store
+Desktop.ini
 
+# Thumbnail cache files
+._*
+Thumbs.db
 
-.aider*
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+# Compiled Python files
+*.pyc
+
+# fish shell
+fishd.*
+.config/fish/fish_history
+fish/fish_history
+
+# random
+shilocation
+
+# Visual Studio Code specific
+.vscode*
+
+# IntelliJ IDE specific
+.idea*
+
+# tmp staff
+supervise
+
+# JFE
+**/__generated_apollo__/**
 
