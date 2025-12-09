@@ -36,11 +36,16 @@ brew install z
 # Fast Node Manager - better than nvm
 brew install fnm
 
+# Python version manager
+brew install pyenv
+
 # run this script when this file changes guy.
 brew install entr
 
 # github util
 brew install gh
+brew install git
+brew install git-lfs
 # nicer git diffs
 brew install git-delta
 
@@ -57,6 +62,7 @@ brew install mtr
 # Install other useful binaries
 brew install the_silver_searcher # ack is an alternative, tbh i forget which i like more.
 brew install fzf
+brew install fd
 
 brew install imagemagick
 brew install rename
@@ -71,4 +77,6 @@ brew install gdu # available as gdu-go. faster than ncdu on SSD's.
 
 
 brew install scrcpy # control/view android phone from PC. amazing
+
+git lfs install
 
