@@ -63,6 +63,8 @@ brew install mtr
 brew install the_silver_searcher # ack is an alternative, tbh i forget which i like more.
 brew install fzf
 brew install fd
+brew install eza # modern ls replacement
+brew install bat # modern cat replacement
 
 brew install imagemagick
 brew install rename
