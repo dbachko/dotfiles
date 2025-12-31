@@ -36,6 +36,12 @@ brew install z
 # Fast Node Manager - better than nvm
 brew install fnm
 
+# bun (for bunx-based tools)
+brew install bun
+
+# OpenCode (https://github.com/sst/opencode)
+brew install opencode
+
 # run this script when this file changes guy.
 brew install entr
 
@@ -71,4 +77,3 @@ brew install gdu # available as gdu-go. faster than ncdu on SSD's.
 
 
 brew install scrcpy # control/view android phone from PC. amazing
-

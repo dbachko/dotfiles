@@ -161,6 +161,10 @@ fnm install --lts  # Install latest LTS version of Node
 fnm default lts-latest  # Set it as default
 fnm use default  # Use the default version
 
+# Bun (includes bunx) - required for tools like oh-my-opencode
+# Installed via brew.sh now, but keeping this here for new-machine checklist completeness.
+brew install bun
+
 # Type `git open` to open the GitHub page or website for a repository.
 npm install -g git-open
 

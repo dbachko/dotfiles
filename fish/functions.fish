@@ -242,6 +242,19 @@ function __lazy_init_npm -d 'lazy initialize npm via fnm'
 end
 abbr --add npm --function __lazy_init_npm
 
+# bun/bunx live on PATH after fnm env is loaded (in my setup).
+function __lazy_init_bun -d 'lazy initialize bun via fnm'
+  __lazy_init_fnm
+  echo "bun"
+end
+abbr --add bun --function __lazy_init_bun
+
+function __lazy_init_bunx -d 'lazy initialize bunx via fnm'
+  __lazy_init_fnm
+  echo "bunx"
+end
+abbr --add bunx --function __lazy_init_bunx
+
 # gcloud: Don't need "$HOME/google-cloud-sdk/path.fish.inc" lazyily done because it only adds to PATH which is already done.
 
 

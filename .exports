@@ -38,3 +38,9 @@ export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always {} 2>/dev/null || tree 
 export CLOUDSDK_PYTHON=/usr/bin/python3
 
 export GOPATH=$HOME/.go/
+
+# bun.sh installer puts bun/bunx in ~/.bun/bin
+if [ -d "$HOME/.bun/bin" ]; then
+  export BUN_INSTALL="$HOME/.bun"
+  export PATH="$HOME/.bun/bin:$PATH"
+fi
