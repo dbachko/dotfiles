@@ -24,8 +24,17 @@ alias chmox='chmod +x'
 alias where=which # sometimes i forget
 
 # time to upgrade `ls`. use eza instead of dealing with coreutils, LS_COLORS blah blah
-alias ls='eza --classify=auto --color --group-directories-first --sort=extension -A'
-alias la='eza --classify=auto --color --group-directories-first --sort=extension -a -l --octal-permissions --no-permissions'
+function ls
+  set -l paths $argv
+  test (count $paths) -eq 0; and set paths .
+  eza --classify=auto --color --group-directories-first --sort=extension -a $paths
+end
+
+function la
+  set -l paths $argv
+  test (count $paths) -eq 0; and set paths .
+  eza --classify=auto --color --group-directories-first --sort=extension -a -l --octal-permissions --no-permissions $paths
+end
 
 # use gdu (gdu-go) if available, as its faster on ssd
 # Ehh.. yes gdu is much faster but doesnt support ** in ignore/excludes.  use them deliberately for now
@@ -42,11 +51,10 @@ abbr v vim
 abbr bwre brew
 abbr brwe brew
 
-abbr cat 'bat -P'
+abbr cat 'bat --paging=never'
 abbr ccat 'cat'
-# Skip line-numbers and grid. https://github.com/sharkdp/bat/blob/e608b331425ca2ce8f8d0bd37e7f90901f91eb99/src/style.rs#L27-L61
-# In the future this can be `default,-numbers,-grid` but they haven't released in 18months so.....   
-set -x BAT_STYLE "changes,header-filename,header-filesize,snip,rule"
+# Use bat's default numbered/grid style.
+set -gx BAT_STYLE "default"
 
 abbr push "git push"
 abbr dels "delta --side-by-side"
@@ -153,10 +161,9 @@ abbr v vim
 abbr bwre brew
 abbr brwe brew
 
-abbr cat 'bat -P'
-# Skip line-numbers and grid. https://github.com/sharkdp/bat/blob/e608b331425ca2ce8f8d0bd37e7f90901f91eb99/src/style.rs#L27-L61
-# In the future this can be `default,-numbers,-grid` but they haven't released in 18months so.....   
-set -x BAT_STYLE "changes,header-filename,header-filesize,snip,rule"
+abbr cat 'bat --paging=never'
+# Use bat's default numbered/grid style.
+set -gx BAT_STYLE "default"
 
 alias resetmouse='printf '"'"'\e[?1000l'"'"
 

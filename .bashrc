@@ -6,3 +6,6 @@
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
 
+
+# fnm (added by dotfiles script)
+eval "$(fnm env --use-on-cd --shell bash)"

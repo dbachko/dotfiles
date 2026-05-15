@@ -41,9 +41,8 @@ export LESS_TERMCAP_ue=$'\E[0m'           # end underline
 export LESS_TERMCAP_us=$'\E[04;38;5;146m' # begin underline
 
 
-# Skip line-numbers and grid. https://github.com/sharkdp/bat/blob/e608b331425ca2ce8f8d0bd37e7f90901f91eb99/src/style.rs#L27-L61
-# In the future this can be `default,-numbers,-grid` but they haven't released in 18months so.....   
-export BAT_STYLE="changes,header-filename,header-filesize,snip,rule"
+# Use bat's default numbered/grid style.
+export BAT_STYLE="default"
 
 
 ##

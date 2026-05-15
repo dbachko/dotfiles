@@ -10,7 +10,9 @@ import { get_unresolved_comments , fetchAsMarkdown, runGoogleAiSearch } from './
 const result = await fetchAsMarkdown({url: 'https://cascadiajs-2025.netlify.app/20-color-spaces/'});
 
 if (result.isError) {
-  console.error('Error:', result.content[0].text);
+  const content = result.content[0];
+  console.error('Error:', content.type === 'text' ? content.text : content);
 } else {
-  console.log(result.content[0].text);
+  const content = result.content[0];
+  console.log(content.type === 'text' ? content.text : content);
 }

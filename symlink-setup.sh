@@ -147,10 +147,29 @@ print_success() {
 
 
 # finds all .dotfiles in this folder
-declare -a FILES_TO_SYMLINK=$(find . -type f -maxdepth 1 -name ".*" -not -name .DS_Store -not -name .git -not -name .macos | sed -e 's|//|/|' | sed -e 's|./.|.|' | sort)
+declare -a FILES_TO_SYMLINK
+while IFS= read -r file; do
+    FILES_TO_SYMLINK+=("$file")
+done < <(find . -maxdepth 1 -type f -name ".*" -not -name .DS_Store -not -name .git -not -name .macos | sed -e 's|//|/|' | sed -e 's|./.|.|' | sort)
 FILES_TO_SYMLINK+=(".vim")
 FILES_TO_SYMLINK+=("bin")
 FILES_TO_SYMLINK+=("fish")
+
+
+declare -a XDG_FILES_TO_SYMLINK
+while IFS= read -r file; do
+    XDG_FILES_TO_SYMLINK+=("$file")
+done < <(find .config -type f | sed -e 's|//|/|' | sed -e 's|^\./||' | sort)
+
+
+declare -a FISH_FILES_TO_SYMLINK
+while IFS= read -r file; do
+    FISH_FILES_TO_SYMLINK+=("$file")
+done < <(find fish -type f \
+    -not -path 'fish/.vscode/*' \
+    -not -name fish_variables \
+    -not -name '*.disabled' \
+    | sed -e 's|//|/|' | sort)
 
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,6 +204,62 @@ main() {
         fi
 
     done
+
+    for i in "${FISH_FILES_TO_SYMLINK[@]}"; do
+
+        sourceFile="$(pwd)/$i"
+        targetFile="$HOME/.config/$i"
+
+        mkd "$(dirname "$targetFile")"
+
+        if [ -e "$targetFile" ]; then
+            if [ "$(readlink "$targetFile")" != "$sourceFile" ]; then
+
+                ask_for_confirmation "'$targetFile' already exists, do you want to overwrite it?"
+                if answer_is_yes; then
+                    rm -rf "$targetFile"
+                    execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+                else
+                    print_error "$targetFile → $sourceFile"
+                fi
+
+            else
+                print_success "$targetFile → $sourceFile"
+            fi
+        else
+            execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+        fi
+
+    done
+
+    for i in "${XDG_FILES_TO_SYMLINK[@]}"; do
+
+        sourceFile="$(pwd)/$i"
+        targetFile="$HOME/$i"
+
+        mkd "$(dirname "$targetFile")"
+
+        if [ -e "$targetFile" ]; then
+            if [ "$(readlink "$targetFile")" != "$sourceFile" ]; then
+
+                ask_for_confirmation "'$targetFile' already exists, do you want to overwrite it?"
+                if answer_is_yes; then
+                    rm -rf "$targetFile"
+                    execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+                else
+                    print_error "$targetFile → $sourceFile"
+                fi
+
+            else
+                print_success "$targetFile → $sourceFile"
+            fi
+        else
+            execute "ln -fs $sourceFile $targetFile" "$targetFile → $sourceFile"
+        fi
+
+    done
+
+    return 0
 
 }
 

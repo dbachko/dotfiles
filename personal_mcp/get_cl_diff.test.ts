@@ -3,6 +3,12 @@ import {suite, test, mock, after} from 'node:test';
 import * as assert from 'node:assert';
 import {getClDiff} from './tools.ts';
 
+function textContent(res: Awaited<ReturnType<typeof getClDiff>>): string {
+  const content = res.content[0];
+  assert.strictEqual(content.type, 'text');
+  return content.text;
+}
+
 suite('getClDiff', () => {
 
   after(() => mock.reset());
@@ -16,7 +22,7 @@ suite('getClDiff', () => {
   test('should return the diff for a valid CL URL', async () => {
     const url = 'https://chromium-review.googlesource.com/c/devtools/devtools-frontend/+/6976658';
     const res = await getClDiff({urlOrId: url});
-    const text = res.content[0].text;
+    const text = textContent(res);
     assert.ok(text.includes('diff --git'));
     assert.ok(text.includes('hasFakeConnection'));
   });
@@ -24,7 +30,7 @@ suite('getClDiff', () => {
   test('should return the diff for a valid CL URL', async () => {
     const url = 'https://crrev.com/c/6976658';
     const res = await getClDiff({urlOrId: url});
-    const text = res.content[0].text;
+    const text = textContent(res);
     assert.ok(text.includes('diff --git'));
     assert.ok(text.includes('hasFakeConnection'));
   });
@@ -32,7 +38,7 @@ suite('getClDiff', () => {
   test('should return the diff for a valid CL ID', async () => {
     const id = '6976658';
     const res = await getClDiff({urlOrId: id});
-    const text = res.content[0].text;
+    const text = textContent(res);
     assert.ok(text.includes('diff --git'));
   });
 

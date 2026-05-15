@@ -2,14 +2,11 @@
 set -euo pipefail
 
 REPO="/Users/dbachko/dev/dotfiles"
-TS=$(date +%s)
-
 add_line() {
   FILE="$1"
   LINE="$2"
   if [ -f "$FILE" ]; then
     if ! grep -Fqx "$LINE" "$FILE"; then
-      cp "$FILE" "$FILE.bak.$TS" || true
       printf "\n# fnm (added by dotfiles script)\n%s\n" "$LINE" >> "$FILE"
       echo "Appended fnm to $FILE"
     else

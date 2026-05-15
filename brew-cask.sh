@@ -14,9 +14,10 @@ brew install --cask rectangle
 
 # dev
 brew install --cask iterm2
+brew install --cask ghostty
 # brew install --cask sublime-text
 brew install --cask imageoptim
-brew install --cask docker
+brew install --cask docker-desktop
 brew install --cask visual-studio-code
 brew install --cask codex
 
@@ -29,5 +30,4 @@ brew install --cask transmission
 
 # brew install --cask spotify
 
-brew tap homebrew/cask-fonts
 brew install --cask font-fira-code

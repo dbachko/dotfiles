@@ -52,7 +52,7 @@ export async function get_unresolved_comments(
   extra,
 ): Promise<CallToolResult> {
   try {
-    let execSyncFn = execSync;
+    let execSyncFn: (command: string) => {toString(): string} = execSync;
     if (process.env.NODE_TEST_CONTEXT) {
       const rets = ['feature1', '12345', 'http://cool'];
       execSyncFn = () => rets.shift();
@@ -313,4 +313,3 @@ export async function fetchAsMarkdown(
     }
   }
 }
-

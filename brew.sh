@@ -62,6 +62,11 @@ brew install mtr
 # Install other useful binaries
 brew install the_silver_searcher # ack is an alternative, tbh i forget which i like more.
 brew install fzf
+brew install fd
+brew install eza
+brew install bat
+brew install glow
+brew install grc
 brew install git-delta
 
 brew install imagemagick
@@ -78,7 +83,6 @@ brew install gdu # available as gdu-go. faster than ncdu on SSD's.
 
 
 brew install scrcpy # control/view android phone from PC. amazing
-brew install youtube-dl
+brew install yt-dlp
 
 git lfs install
-

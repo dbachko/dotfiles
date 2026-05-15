@@ -10,19 +10,25 @@ test('run_google_ai_search works', { timeout: 60000 }, async (t) => {
   
   console.log('Starting Google AI search test...');
   const result = await runGoogleAiSearch({ query });
+  const content = result.content[0];
+  assert.strictEqual(content.type, 'text');
   
   console.log('Result:', result);
 
   if (result.isError) {
-      // If it fails, we fail the test, but maybe we should log why.
-      // It might fail if Google detects bot.
-      assert.fail(`Tool execution failed: ${result.content[0].text}`);
+      const message = content.text;
+      if (message.includes('Failed to connect to browser')) {
+        t.skip(`Missing browser with remote debugging enabled: ${message}`);
+        return;
+      }
+
+      assert.fail(`Tool execution failed: ${message}`);
   }
 
-  assert.ok(result.content[0].text.includes('Saved AI response'));
+  assert.ok(content.text.includes('Saved AI response'));
   
   // Check if file exists and cleanup
-  const match = result.content[0].text.match(/Saved AI response to (.*?) \(source:/);
+  const match = content.text.match(/Saved AI response to (.*?) \(source:/);
   if (match) {
       const fullPath = match[1];
       try {
